@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js --experimental-module",
+    "start": "rimraf tmp/** && rimraf projects/** && mkdir projects && mkdir tmp && node src/index.js --experimental-module",
     "lint": "eslint src --ext .js",
     "lint:fix": "eslint src --ext .js --fix",
     "format": "prettier src --check",

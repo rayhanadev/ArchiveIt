@@ -56,6 +56,5 @@ async function fetchFile(urlPath = "/") {
 async function fetchRepls(username) {
 	const myUser = new replapi.User(username);
 	const userData = await myUser.userRestfulData()
-	const userRepls = userData.repls.map(repl => repl.url);
-	console.log(userRepls);
+	return userData.repls.map(repl => repl.url);
 };
