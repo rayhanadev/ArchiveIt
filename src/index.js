@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import request from "request";
-import rimraf  from 'rimraf';
 import AdmZip from "adm-zip";
 import ReplAPI from "replapi-it";
 
@@ -44,17 +43,63 @@ async function fetchFile(urlPath = "/") {
     console.log(`Something happened: ${error}`);
   });
 
-	const zip = new AdmZip(path.join(process.cwd(), `tmp/${urlPath.split("/")[2]}.zip`));
-	zip.extractAllTo(path.join(process.cwd(), `projects/${urlPath.split("/")[2]}`), true);
-	rimraf.sync(path.join(process.cwd(), 'tmp/**.*'));
-};
+  const zip = new AdmZip(
+    path.join(process.cwd(), `tmp/${urlPath.split("/")[2]}.zip`)
+  );
+  zip.extractAllTo(
+    path.join(process.cwd(), `projects/${urlPath.split("/")[2]}`),
+    true
+  );
+}
+
+class UserPublicRepls extends replapi.CustomDataQuery {
+  constructor(username) {
+    const queryName = "UserRepls";
+    const customQuery = `
+      userByUsername(username: $username) {
+        publicRepls(count: 100000) {
+        	items {
+        		slug
+        	}
+        }
+      }`;
+    const customVariables = { username };
+    super(queryName, customQuery, customVariables);
+  }
+}
+
+const myUser = new UserPublicRepls("RayhanADev");
 
 /**
  * Fetchs all of a user's Repls
  * @param username <String> - a username
  */
 async function fetchRepls(username) {
-	const myUser = new replapi.User(username);
-	const userData = await myUser.userRestfulData()
-	return userData.repls.map(repl => repl.url);
-};
+  const info = await myUser.getData();
+  console.log();
+  return info.userByUsername.publicRepls.items.map(
+    (repl) => `/@${username}/${repl.slug}`
+  );
+}
+
+/**
+ * Create an archive of a user's Repls locally
+ * @param username <String> - a username
+ */
+async function archiveReplsLocally(username) {
+  console.log(`Creating an archive for @${username}!`);
+  const repls = await fetchRepls(username);
+  repls.forEach((repl) => {
+    setTimeout(() => {
+      console.log(`Fetching ${repl.split("/")[2]}.`);
+      try {
+        fetchFile(repl);
+      } catch (error) {
+        console.log(`Something happened: ${error}`);
+      }
+    }, 5000);
+  });
+}
+
+if(!process.argv[2]) throw new Error('Missing Username Argument');
+archiveReplsLocally(String(process.argv[2]));

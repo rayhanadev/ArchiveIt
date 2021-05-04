@@ -1,11 +1,11 @@
 {
-  "name": "archiveit",
+  "name": "archive-it",
   "version": "1.0.0",
   "description": "A utility to archive a Replit User's projects",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "rimraf tmp/** && rimraf projects/** && mkdir projects && mkdir tmp && node src/index.js --experimental-module",
+    "start": "node src/index.js",
     "lint": "eslint src --ext .js",
     "lint:fix": "eslint src --ext .js --fix",
     "format": "prettier src --check",
@@ -29,10 +29,11 @@
   },
   "homepage": "https://github.com/RayhanADev/ArchiveIt#readme",
   "dependencies": {
+    "@octokit/rest": "^18.5.3",
     "adm-zip": "^0.5.5",
     "replapi-it": "^2.1.2",
     "request": "^2.88.2",
-		"rimraf": "^3.0.2"
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "eslint": "^7.25.0",
