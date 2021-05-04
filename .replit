@@ -1,1 +1,1 @@
-run = "npm run start -- RayhanADev"
+run = "npm run start -- RayhanADev --nozip"

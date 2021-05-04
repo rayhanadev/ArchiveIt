@@ -1,5 +1,5 @@
 # ArchiveIt!
-An simple archiving tool for a Replit User. Creates a single folder containing all public Repls of a user.
+A simple archiving tool for a Replit User. Creates a single folder containing all public Repls of a user.
 
 ## How to use?
 It's pretty simple! you can visit [this](https://replit.com/@RayhanADev/ArchiveIt) Repl, create a fork, and change your `.replit` file as shown:
