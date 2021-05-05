@@ -70,13 +70,13 @@ class UserPublicRepls extends replapi.CustomDataQuery {
 	}
 }
 
-const myUser = new UserPublicRepls('RayhanADev');
 
 /**
  * Fetchs all of a user's Repls
  * @param username <String> - a username
  */
 async function fetchRepls(username) {
+	const myUser = new UserPublicRepls(username);
 	const info = await myUser.getData();
 	return info.userByUsername.publicRepls.items.map((repl) => {
 		if (repl.slug !== process.env.REPL_SLUG)
