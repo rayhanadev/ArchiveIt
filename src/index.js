@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import request from 'request';
+import rimraf from 'rimraf';
 import AdmZip from 'adm-zip';
 import ReplAPI from 'replapi-it';
 
@@ -17,6 +18,9 @@ const headers = {
 	Referrer: 'https://replit.com/',
 	Origin: 'https://replit.com/',
 };
+
+const projectsPath = path.join(process.cwd(), 'projects');
+const tmpPath = path.join(process.cwd(), 'tmp');
 
 /**
  * Retrives a specific Repl's .zip file and then unzips it into the ./projects directory
@@ -44,13 +48,8 @@ async function fetchFile(urlPath = '/') {
 		console.log(`Something happened: ${error}`);
 	});
 
-	const zip = new AdmZip(
-		path.join(process.cwd(), `tmp/${urlPath.split('/')[2]}.zip`)
-	);
-	zip.extractAllTo(
-		path.join(process.cwd(), `projects/${urlPath.split('/')[2]}`),
-		true
-	);
+	const zip = new AdmZip(path.join(tmpPath, `${urlPath.split('/')[2]}.zip`));
+	zip.extractAllTo(path.join(projectsPath, `${urlPath.split('/')[2]}`), true);
 	console.log(`Unzipped ${urlPath.split('/')[2]}.`);
 }
 
@@ -69,7 +68,6 @@ class UserPublicRepls extends replapi.CustomDataQuery {
 		super(queryName, customQuery, customVariables);
 	}
 }
-
 
 /**
  * Fetchs all of a user's Repls
@@ -100,6 +98,22 @@ function delay(n) {
  * @param username <String> - a username
  */
 async function archiveReplsLocally(username, options) {
+	if (!fs.existsSync(projectsPath)) {
+		fs.mkdirSync(projectsPath);
+	} else if (fs.readdirSync(projectsPath).length > 0) {
+		rimraf(projectsPath, () => {
+			fs.mkdirSync(projectsPath);
+		});
+	}
+
+	if (!fs.existsSync(tmpPath)) {
+		fs.mkdirSync(tmpPath);
+	} else if (fs.readdirSync(tmpPath).length > 0) {
+		rimraf(tmpPath, () => {
+			fs.mkdirSync(tmpPath);
+		});
+	}
+
 	console.log(`Creating an archive for @${username}!`);
 	if (options === 'nozip') console.log('Omitting creation of final .zip file.');
 
@@ -116,7 +130,7 @@ async function archiveReplsLocally(username, options) {
 	if (options !== 'nozip') {
 		console.log('Creating final .zip file.');
 		const projectsZip = new AdmZip();
-		projectsZip.addLocalFolder(path.join(process.cwd(), `projects/`));
+		projectsZip.addLocalFolder(projectsPath);
 		projectsZip.writeZip(
 			path.join(process.cwd(), `${username.toLowerCase()}-repls.zip`)
 		);
@@ -124,9 +138,7 @@ async function archiveReplsLocally(username, options) {
 	}
 
 	console.log('\n\nFinished creating archive.');
-	console.log(
-		`View unzipped archive at ${path.join(process.cwd(), 'projects')}.`
-	);
+	console.log(`View unzipped archive at ${projectsPath}.`);
 	if (options !== 'nozip') {
 		console.log(
 			`View zipped archive at ${path.join(
@@ -135,6 +147,9 @@ async function archiveReplsLocally(username, options) {
 			)}.`
 		);
 	}
+	rimraf(tmpPath, () => {
+		console.log('');
+	});
 }
 
 if (!process.argv[2]) {
