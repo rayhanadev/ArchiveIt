@@ -1,3 +1,7 @@
+# Directories
 node_modules/
 projects/
 tmp/
+
+# Files
+.replit
