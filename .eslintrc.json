@@ -10,6 +10,7 @@
   "rules": {
     "no-console": "off",
     "no-debugger": "off",
+    "no-await-in-loop": "off",
     "import/extensions": "off"
   }
 }
