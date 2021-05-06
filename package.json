@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/RayhanADev/ArchiveIt#readme",
   "dependencies": {
-    "@octokit/rest": "^18.5.3",
     "adm-zip": "^0.5.5",
     "replapi-it": "^2.1.2",
     "request": "^2.88.2",
