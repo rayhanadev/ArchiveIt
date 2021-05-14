@@ -1,3 +1,5 @@
+> This project has been archived due to the lockdown of the .zip paths. The code will not be maintained until a better solution is found.
+
 # ArchiveIt!
 A simple archiving tool for a Replit User. Creates a single folder containing all public Repls of a user.
 
